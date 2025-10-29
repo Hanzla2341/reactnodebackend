@@ -12,6 +12,9 @@ app.use(cors());
 app.use(express.json());
 connectDB();
 app.use('/api', userRoutes);
+app.get('/', (req,res)=>{
+  res.send("hello")
+});
 
 // Instead of module.exports = app:
 const serverless = require('serverless-http');
