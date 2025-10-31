@@ -17,5 +17,5 @@ app.get('/', (req,res)=>{
 });
 
 // Instead of module.exports = app:
-const serverless = require('serverless-http');
-module.exports = serverless(app);
+
+module.exports = app;
