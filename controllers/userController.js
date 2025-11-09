@@ -89,7 +89,9 @@ exports.orders = async (req, res) => {
 
   if (req.method === "GET") {
     try {
-      const orders = await Order.find().sort({ createdAt: -1 });
+      // Allow query filter by email!
+      const filter = req.query.email ? { email: req.query.email } : {};
+      const orders = await Order.find(filter).sort({ createdAt: -1 });
       return res.json(orders);
     } catch (err) {
       return res.status(500).json({ message: "Error fetching orders" });
@@ -98,4 +100,5 @@ exports.orders = async (req, res) => {
 
   return res.status(405).json({ message: "Method Not Allowed" });
 };
+
 
