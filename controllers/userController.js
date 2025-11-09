@@ -72,33 +72,35 @@ exports.updatePassword = async (req, res) => {
 
 
 
-exports.orders = async (req, res) => {
-  if (req.method === "POST") {
-    const { name, price, quantity, email, imageKey } = req.body;
-    if (!name || !price || !quantity || !email || !imageKey) {
-      return res.status(400).json({ message: "Missing fields" });
-    }
-    try {
-      const order = new Order({ name, price, quantity, email, imageKey });
-      const savedOrder = await order.save();
-      return res.json(savedOrder);
-    } catch (err) {
-      return res.status(500).json({ message: "Error saving order" });
-    }
+
+
+// ✅ POST /api/orders — Create an order
+exports.createOrder = async (req, res) => {
+  const { name, price, quantity, email, imageKey } = req.body;
+  if (!name || !price || !quantity || !email || !imageKey) {
+    return res.status(400).json({ message: "Missing fields" });
   }
 
-  if (req.method === "GET") {
-    try {
-      // Allow query filter by email!
-      const filter = req.query.email ? { email: req.query.email } : {};
-      const orders = await Order.find(filter).sort({ createdAt: -1 });
-      return res.json(orders);
-    } catch (err) {
-      return res.status(500).json({ message: "Error fetching orders" });
-    }
+  try {
+    const order = new Order({ name, price, quantity, email, imageKey });
+    const savedOrder = await order.save();
+    return res.status(201).json(savedOrder);
+  } catch (err) {
+    console.error("Error saving order:", err);
+    return res.status(500).json({ message: "Error saving order" });
   }
-
-  return res.status(405).json({ message: "Method Not Allowed" });
 };
+
+// ✅ GET /api/orders — Fetch all orders
+exports.getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    return res.json(orders);
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    return res.status(500).json({ message: "Error fetching orders" });
+  }
+};
+
 
 
