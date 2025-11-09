@@ -70,26 +70,34 @@ exports.updatePassword = async (req, res) => {
 };
 
 
-exports.createOrder = async (req, res) => {
-  const { name, price, quantity, email, imageKey } = req.body;
-  if (!name || !price || !quantity || !email || !imageKey) {
-    return res.status(400).json({ message: "Missing fields" });
-  }
-  try {
-    const order = new Order({ name, price, quantity, email, imageKey });
-    const savedOrder = await order.save();
-    res.json(savedOrder);
-  } catch (err) {
-    res.status(500).json({ message: "Error saving order" });
-  }
-};
 
-// (Optional) Get all orders
-exports.getOrders = async (req, res) => {
-  try {
-    const orders = await Order.find().sort({ createdAt: -1 });
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching orders" });
+
+exports.orders = async (req, res) => {
+  // Handle POST (create new order)
+  if (req.method === "POST") {
+    const { name, price, quantity, email, imageKey } = req.body;
+    if (!name || !price || !quantity || !email || !imageKey) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+    try {
+      const order = new Order({ name, price, quantity, email, imageKey });
+      const savedOrder = await order.save();
+      return res.json(savedOrder);
+    } catch (err) {
+      return res.status(500).json({ message: "Error saving order" });
+    }
   }
+
+  // Handle GET (list all orders)
+  if (req.method === "GET") {
+    try {
+      const orders = await Order.find().sort({ createdAt: -1 });
+      return res.json(orders);
+    } catch (err) {
+      return res.status(500).json({ message: "Error fetching orders" });
+    }
+  }
+
+  // Method not allowed
+  return res.status(405).json({ message: "Method Not Allowed" });
 };
