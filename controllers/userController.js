@@ -93,14 +93,16 @@ exports.createOrder = async (req, res) => {
 
 // ✅ GET /api/orders — Fetch all orders
 exports.getOrders = async (req, res) => {
+  const { email } = req.query;
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const filter = email ? { email } : {};
+    const orders = await Order.find(filter).sort({ createdAt: -1 });
     return res.json(orders);
   } catch (err) {
-    console.error("Error fetching orders:", err);
     return res.status(500).json({ message: "Error fetching orders" });
   }
 };
+
 
 
 
