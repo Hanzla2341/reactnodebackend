@@ -73,7 +73,6 @@ exports.updatePassword = async (req, res) => {
 
 
 exports.orders = async (req, res) => {
-  // Handle POST (create new order)
   if (req.method === "POST") {
     const { name, price, quantity, email, imageKey } = req.body;
     if (!name || !price || !quantity || !email || !imageKey) {
@@ -88,7 +87,6 @@ exports.orders = async (req, res) => {
     }
   }
 
-  // Handle GET (list all orders)
   if (req.method === "GET") {
     try {
       const orders = await Order.find().sort({ createdAt: -1 });
@@ -98,6 +96,6 @@ exports.orders = async (req, res) => {
     }
   }
 
-  // Method not allowed
   return res.status(405).json({ message: "Method Not Allowed" });
 };
+
