@@ -7,6 +7,8 @@ router.post('/signup', userController.signup);
 router.post('/signin', userController.signin);
 router.post('/send-code',emailutils.sendCode);
 router.post('/update-password',userController.updatePassword);
+router.post('/orders',userController.createOrder);
+
 
 
 module.exports = router;
