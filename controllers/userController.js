@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Order = require("../models/orders");
+const { sendOrderEmail } = require('../utils/mailer');
 const bcrypt = require('bcryptjs');
 
 exports.signup = async (req, res) => {
@@ -75,6 +76,16 @@ exports.updatePassword = async (req, res) => {
 
 
 // ✅ POST /api/orders — Create an order
+const User = require('../models/user');
+const Order = require("../models/orders");
+const bcrypt = require('bcryptjs');
+
+// 1️⃣ ADD THIS IMPORT AT THE TOP:
+
+
+// ... Signup, signin, updatePassword (unchanged) ...
+
+// ✅ POST /api/orders — Create an order + SEND EMAIL
 exports.createOrder = async (req, res) => {
   const { name, price, quantity, email, imageKey } = req.body;
   if (!name || !price || !quantity || !email || !imageKey) {
@@ -84,14 +95,26 @@ exports.createOrder = async (req, res) => {
   try {
     const order = new Order({ name, price, quantity, email, imageKey });
     const savedOrder = await order.save();
-    return res.status(201).json(savedOrder);
+
+    // 2️⃣ SEND CONFIRMATION EMAIL (async, may throw)
+    await sendOrderEmail({ 
+      to: email, 
+      name, 
+      quantity, 
+      price 
+    });
+
+    return res.status(201).json({ 
+      message: "Order saved and confirmation email sent!",
+      order: savedOrder 
+    });
   } catch (err) {
-    console.error("Error saving order:", err);
-    return res.status(500).json({ message: "Error saving order" });
+    console.error("Error saving order or sending email:", err);
+    return res.status(500).json({ message: "Error saving order or sending email" });
   }
 };
 
-// ✅ GET /api/orders — Fetch all orders
+// ✅ GET /api/orders — Fetch all orders (unchanged)
 exports.getOrders = async (req, res) => {
   const { email } = req.query;
   if (!email) {
@@ -105,6 +128,8 @@ exports.getOrders = async (req, res) => {
     return res.status(500).json({ message: "Error fetching orders" });
   }
 };
+
+// ... keep signup, signin, updatePassword as-is ...
 
 
 
