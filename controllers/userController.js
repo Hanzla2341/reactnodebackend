@@ -1,7 +1,8 @@
 const User = require('../models/user');
 const Order = require("../models/orders");
-const { sendOrderEmail } = require('../utils/mailer');
 const bcrypt = require('bcryptjs');
+const { sendOrderEmail } = require('../utils/mailer');
+
 
 exports.signup = async (req, res) => {
   try {
@@ -76,9 +77,7 @@ exports.updatePassword = async (req, res) => {
 
 
 // ✅ POST /api/orders — Create an order
-const User = require('../models/user');
-const Order = require("../models/orders");
-const bcrypt = require('bcryptjs');
+
 
 // 1️⃣ ADD THIS IMPORT AT THE TOP:
 

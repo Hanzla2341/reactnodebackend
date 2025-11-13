@@ -3,7 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const serverless = require('serverless-http');
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routers/UserRouter');
 
 dotenv.config();
 const app = express();
